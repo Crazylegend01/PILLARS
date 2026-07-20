@@ -184,6 +184,17 @@ body::after {
   100% { width: 100%; }
 }
 
+/* Auto-hide splash after 3s regardless of JS module loading */
+@keyframes splashAutoHide {
+  0%   { opacity: 1; visibility: visible; pointer-events: auto; }
+  85%  { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+#splash:not(.hidden) {
+  animation: splashAutoHide 0.8s ease 2.5s forwards;
+}
+
 /* ---------- Route Transition Overlay ---------- */
 #route-loader {
   position: fixed;
