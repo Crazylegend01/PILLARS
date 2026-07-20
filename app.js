@@ -434,30 +434,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   Nav.init();
   bindPasswordToggles();
 
-  // 3. Splash
-  Splash.show(1800);
-
-  // 4. Init Auth (resolves session before routing)
-  await AuthManager.init();
-
-  // 5. Init Phone Verification
-  await PhoneVerification.init();
-
-  // 6. Register routes
+  // 3. Register routes early so router is always ready
   Router.register('home',        initHome);
   Router.register('marketplace', initMarketplace);
   Router.register('news',        initNews);
   Router.register('chat',        initChat);
   Router.register('profile',     initProfile);
 
-  // 7. Start router
+  // 4. Splash — always hides after 1800ms no matter what
+  Splash.show(1800);
+
+  // 5. Init Auth + Phone with a hard 3s timeout so we never get stuck
+  const withTimeout = (promise, ms) =>
+    Promise.race([promise, new Promise(res => setTimeout(res, ms))]);
+
+  try { await withTimeout(AuthManager.init(), 3000); }
+  catch (e) { console.warn('Auth init failed, continuing anyway:', e); }
+
+  try { await withTimeout(PhoneVerification.init(), 3000); }
+  catch (e) { console.warn('Phone init failed, continuing anyway:', e); }
+
+  // 6. Start router — always fires, splash will have hidden by now
   setTimeout(() => Router.init(), 250);
 
-  // 8. Re-render home when auth state changes (show/hide CTA)
+  // 7. Re-render home when auth state changes (show/hide CTA)
   AuthManager.onAuthStateChange(() => {
     const cta = document.getElementById('auth-cta-block');
     if (cta) cta.style.display = AuthManager.isLoggedIn() ? 'none' : 'flex';
-    // Refresh profile if currently viewing it
     if (window.location.hash === '#profile') initProfile();
   });
 });
