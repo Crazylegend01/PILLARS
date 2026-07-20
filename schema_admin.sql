@@ -31,11 +31,13 @@ comment on table public.announcements is
 alter table public.announcements enable row level security;
 
 -- Everyone can read announcements
+drop policy if exists "Announcements are publicly readable" on public.announcements;
 create policy "Announcements are publicly readable"
   on public.announcements for select
   using (true);
 
 -- Only admins/superadmins/subadmins can insert
+drop policy if exists "Admins can post announcements" on public.announcements;
 create policy "Admins can post announcements"
   on public.announcements for insert
   with check (
@@ -47,6 +49,7 @@ create policy "Admins can post announcements"
   );
 
 -- Only admins can delete announcements
+drop policy if exists "Admins can delete announcements" on public.announcements;
 create policy "Admins can delete announcements"
   on public.announcements for delete
   using (
@@ -59,6 +62,7 @@ create policy "Admins can delete announcements"
 
 -- ── 4. ADMIN RLS FOR PROFILES ────────────────────────────────
 -- Admins can update any user's role / ban status
+drop policy if exists "Admins can update any profile" on public.profiles;
 create policy "Admins can update any profile"
   on public.profiles for update
   using (
