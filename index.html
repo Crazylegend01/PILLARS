@@ -6,36 +6,22 @@
   <meta name="description" content="PROJECT PILLARS BY LEGENDS — Do simple things repeatedly. The ultimate Legends ecosystem." />
   <meta name="theme-color" content="#10b981" />
   <title>PILLARS BY LEGENDS</title>
-
-  <!-- Favicon using the logo -->
   <link rel="icon" type="image/png" href="assets/logo.png" />
-
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-
   <link rel="stylesheet" href="styles.css" />
-
-  <style>
-    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
-  </style>
+  <style> body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; } </style>
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════
-       WATERMARK
-  ════════════════════════════════════════════ -->
+  <!-- WATERMARK -->
   <div id="watermark" aria-hidden="true"><span>BY LEGENDS</span></div>
 
-  <!-- ═══════════════════════════════════════════
-       ROUTE LOADER BAR
-  ════════════════════════════════════════════ -->
+  <!-- ROUTE LOADER BAR -->
   <div id="route-loader" role="progressbar" aria-hidden="true"></div>
 
-  <!-- ═══════════════════════════════════════════
-       SPLASH SCREEN
-  ════════════════════════════════════════════ -->
+  <!-- SPLASH SCREEN -->
   <div id="splash" role="status" aria-label="Loading Project Pillars">
     <div class="hero-logo-wrap">
       <img src="assets/logo.png" alt="Pillars by Legends Logo" class="splash-logo" />
@@ -49,10 +35,169 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
+       AUTH MODAL — Sign Up / Login
+  ════════════════════════════════════════════ -->
+  <div id="auth-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Authentication">
+    <div class="modal-card auth-modal-card">
+
+      <!-- Close -->
+      <button id="auth-close-btn" class="modal-close-btn" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Logo -->
+      <div class="modal-logo-wrap">
+        <img src="assets/logo.png" alt="Logo" class="modal-logo" />
+      </div>
+
+      <h2 class="modal-title" id="auth-modal-title">Welcome Back, Legend</h2>
+      <p class="modal-sub">The Legends ecosystem awaits you.</p>
+
+      <!-- Tabs -->
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" data-tab="login"  role="tab" aria-selected="true">LOGIN</button>
+        <button class="auth-tab"        data-tab="signup" role="tab" aria-selected="false">SIGN UP</button>
+      </div>
+
+      <!-- Error / Success banner -->
+      <div id="auth-error" class="auth-message" style="display:none;"></div>
+
+      <!-- ── LOGIN FORM ── -->
+      <form id="auth-login-form" class="auth-form" autocomplete="on">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email</label>
+          <input id="login-email" class="form-input" type="email" placeholder="legend@example.com" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <div class="input-pw-wrap">
+            <input id="login-password" class="form-input" type="password" placeholder="••••••••" autocomplete="current-password" required />
+            <button type="button" class="pw-toggle" data-target="login-password" aria-label="Toggle password">👁</button>
+          </div>
+        </div>
+        <button id="auth-submit-btn" class="btn btn-primary btn-full" type="submit">SIGN IN</button>
+      </form>
+
+      <!-- ── SIGN UP FORM ── -->
+      <form id="auth-signup-form" class="auth-form" style="display:none;" autocomplete="off">
+        <div class="form-group">
+          <label class="form-label" for="signup-email">Email</label>
+          <input id="signup-email" class="form-input" type="email" placeholder="legend@example.com" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-password">Password</label>
+          <div class="input-pw-wrap">
+            <input id="signup-password" class="form-input" type="password" placeholder="Min. 8 characters" autocomplete="new-password" required />
+            <button type="button" class="pw-toggle" data-target="signup-password" aria-label="Toggle password">👁</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-confirm">Confirm Password</label>
+          <div class="input-pw-wrap">
+            <input id="signup-confirm" class="form-input" type="password" placeholder="Re-enter password" autocomplete="new-password" required />
+            <button type="button" class="pw-toggle" data-target="signup-confirm" aria-label="Toggle password">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" type="submit">CREATE ACCOUNT</button>
+      </form>
+
+      <!-- Divider -->
+      <div class="auth-divider"><span>or continue with</span></div>
+
+      <!-- Google OAuth -->
+      <button class="auth-google-btn" type="button" aria-label="Sign in with Google">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        Continue with Google
+      </button>
+
+      <p class="auth-footer-note">
+        By continuing, you agree to the
+        <a href="#" style="color:var(--em-400)">Terms of Service</a>
+        and <a href="#" style="color:var(--em-400)">Privacy Policy</a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PHONE VERIFICATION MODAL (Compulsory Gate)
+  ════════════════════════════════════════════ -->
+  <div id="phone-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Phone Verification">
+    <div class="modal-card phone-modal-card">
+
+      <!-- Icon -->
+      <div class="phone-modal-icon">📱</div>
+
+      <h2 class="modal-title">Phone Verification Required</h2>
+      <p class="modal-sub">Verify your number to unlock Marketplace, News &amp; Live Chat.</p>
+
+      <!-- Error banner -->
+      <div id="phone-error" class="auth-message" style="display:none;"></div>
+
+      <!-- ── STEP 1: Enter Phone ── -->
+      <div id="phone-step-enter" class="phone-step" style="display:flex;">
+        <p class="phone-step-label">
+          Enter your phone number in international format.<br/>
+          <span style="color:var(--em-500);font-size:0.8rem;">Example: +2348012345678 · +14155551234</span>
+        </p>
+        <div class="form-group" style="width:100%;">
+          <label class="form-label" for="phone-input">Phone Number</label>
+          <input
+            id="phone-input"
+            class="form-input"
+            type="tel"
+            placeholder="+1234567890"
+            autocomplete="tel"
+            aria-label="Phone number in E.164 format"
+          />
+        </div>
+        <button id="phone-send-btn" class="btn btn-primary btn-full" type="button">
+          SEND VERIFICATION CODE
+        </button>
+        <p class="auth-footer-note" style="margin-top:10px;">
+          We'll send a one-time code via SMS. Standard rates may apply.
+        </p>
+      </div>
+
+      <!-- ── STEP 2: Enter OTP ── -->
+      <div id="phone-step-otp" class="phone-step" style="display:none;">
+        <p class="phone-step-label">
+          Enter the 6-digit code sent to<br/>
+          <strong id="otp-phone-display" style="color:var(--em-400);"></strong>
+        </p>
+        <div class="form-group" style="width:100%;">
+          <label class="form-label" for="otp-input">Verification Code</label>
+          <input
+            id="otp-input"
+            class="form-input otp-input"
+            type="text"
+            inputmode="numeric"
+            placeholder="······"
+            maxlength="6"
+            autocomplete="one-time-code"
+            aria-label="6-digit OTP code"
+          />
+        </div>
+        <button id="otp-verify-btn" class="btn btn-primary btn-full" type="button">VERIFY</button>
+        <div class="otp-actions">
+          <button id="otp-back-btn" class="link-btn" type="button">← Change Number</button>
+          <button id="otp-resend-btn" class="link-btn" type="button">Resend Code</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Success ── -->
+      <div id="phone-step-done" class="phone-step phone-step-done" style="display:none;">
+        <div class="verified-icon">✅</div>
+        <h3 style="color:var(--em-300);font-size:1.3rem;font-weight:800;">Phone Verified!</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;">You now have full Legend access. Redirecting...</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
        NAVIGATION
   ════════════════════════════════════════════ -->
   <nav id="nav" role="navigation" aria-label="Main Navigation">
-    <!-- Brand -->
     <a href="#home" class="nav-brand" data-nav="home">
       <img src="assets/logo.png" alt="Logo" class="nav-logo" />
       <div class="nav-title">
@@ -61,54 +206,43 @@
       </div>
     </a>
 
-    <!-- Desktop Links -->
     <ul class="nav-links" role="list">
       <li>
         <a href="#home" data-nav="home">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           Home
         </a>
       </li>
       <li>
         <a href="#marketplace" data-nav="marketplace">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
           Marketplace
         </a>
       </li>
       <li>
         <a href="#news" data-nav="news">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
           News &amp; Updates
         </a>
       </li>
       <li>
         <a href="#chat" data-nav="chat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
           Live Chat
         </a>
       </li>
       <li>
         <a href="#profile" data-nav="profile">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           Profile
         </a>
       </li>
     </ul>
 
-    <!-- Controls -->
     <div class="nav-controls">
       <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">🖥️ SYSTEM</button>
-      <!-- Hamburger -->
+      <!-- Auth state injected here by auth.js -->
+      <div id="nav-auth"></div>
       <button id="hamburger" class="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -144,36 +278,24 @@
   ════════════════════════════════════════════ -->
   <main id="main">
 
-    <!-- ──────────────────────────────────────
-         HOME VIEW
-    ─────────────────────────────────────── -->
+    <!-- HOME VIEW -->
     <section id="view-home" class="view" aria-label="Home">
-
-      <!-- HERO -->
       <div class="hero">
         <div class="hero-logo-wrap">
           <img src="assets/logo.png" alt="Pillars by Legends Logo" class="hero-logo" />
           <div class="hero-logo-ring"></div>
           <div class="hero-logo-ring2"></div>
         </div>
-
-        <p class="hero-eyebrow">Phase 1 — Now Live</p>
-
+        <p class="hero-eyebrow">Phase 1 &amp; 2 — Now Live</p>
         <h1 class="hero-title">PROJECT<br /><span>PILLARS</span></h1>
-
         <p class="hero-tagline">"Do simple things repeatedly..."</p>
-
         <div class="hero-actions">
           <a href="#marketplace" class="btn btn-primary" data-nav="marketplace">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
             Enter Marketplace
           </a>
-          <a href="#news" class="btn btn-glass" data-nav="news">
-            Latest Updates
-          </a>
+          <a href="#news" class="btn btn-glass" data-nav="news">Latest Updates</a>
         </div>
-
-        <!-- Stats -->
         <div class="hero-stats">
           <div class="glass-card stat-card">
             <div class="stat-num" data-target="12500" data-plus="true">0+</div>
@@ -190,7 +312,21 @@
         </div>
       </div>
 
-      <!-- FEATURES -->
+      <!-- Auth CTA for logged-out users -->
+      <div class="section" id="home-auth-cta" style="padding-top:0;">
+        <div class="glass-card auth-cta-card" id="auth-cta-block">
+          <div class="auth-cta-icon">🏛️</div>
+          <div>
+            <h3 class="auth-cta-title">Join the Legends</h3>
+            <p class="auth-cta-desc">Create your account to access the Marketplace, Live Chat, News &amp; more.</p>
+          </div>
+          <div class="auth-cta-actions">
+            <button class="btn btn-primary" onclick="window.__AuthManager?.openModal('signup')">Create Account</button>
+            <button class="btn btn-glass"   onclick="window.__AuthManager?.openModal('login')">Sign In</button>
+          </div>
+        </div>
+      </div>
+
       <div class="section">
         <h2 class="section-title">Why Pillars?</h2>
         <p class="section-sub">Built by Legends, for Legends. Every pillar stands for something real.</p>
@@ -198,239 +334,216 @@
           <div class="glass-card feature-card">
             <div class="feature-icon">🏛️</div>
             <h3 class="feature-title">Legendary Foundation</h3>
-            <p class="feature-desc">Built on principles of discipline, community, and mastery. Every feature is designed to reward consistent effort — because greatness is built one rep at a time.</p>
+            <p class="feature-desc">Built on principles of discipline, community, and mastery. Every feature rewards consistent effort — greatness is built one rep at a time.</p>
           </div>
           <div class="glass-card feature-card">
             <div class="feature-icon">💎</div>
             <h3 class="feature-title">True Ownership</h3>
-            <p class="feature-desc">Your items, your identity. From NFT collectibles to exclusive skins — everything you earn in Pillars belongs to you and you alone.</p>
+            <p class="feature-desc">Your items, your identity. From NFT collectibles to exclusive skins — everything you earn in Pillars belongs to you alone.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3 class="feature-title">Secure &amp; Verified</h3>
+            <p class="feature-desc">Phase 2 brings full authentication and phone verification — ensuring every Legend in the ecosystem is real, trusted, and protected.</p>
           </div>
           <div class="glass-card feature-card">
             <div class="feature-icon">⚡</div>
             <h3 class="feature-title">Live Ecosystem</h3>
-            <p class="feature-desc">Real-time trading, live chat, and community events keep the world of Pillars alive 24/7. There's always something happening for active Legends.</p>
+            <p class="feature-desc">Real-time trading, live chat, and community events keep the world of Pillars alive 24/7.</p>
           </div>
           <div class="glass-card feature-card">
             <div class="feature-icon">🏆</div>
-            <h3 class="feature-title">Compete & Conquer</h3>
-            <p class="feature-desc">Ranked tournaments, seasonal leaderboards, and Championship events with massive Pillars Coin (PLC) prize pools. Prove you're a Legend.</p>
-          </div>
-          <div class="glass-card feature-card">
-            <div class="feature-icon">🌐</div>
-            <h3 class="feature-title">Global Community</h3>
-            <p class="feature-desc">Thousands of Legends across the globe — trading, strategising, and growing together. Phase 2 brings Guilds and Land ownership to deepen those bonds.</p>
+            <h3 class="feature-title">Compete &amp; Conquer</h3>
+            <p class="feature-desc">Ranked tournaments, seasonal leaderboards, and Championship events with massive PLC prize pools.</p>
           </div>
           <div class="glass-card feature-card">
             <div class="feature-icon">🔮</div>
-            <h3 class="feature-title">Phase 2 Coming</h3>
-            <p class="feature-desc">Guilds, land NFTs, governance voting, and cross-platform play. The Pillars universe is expanding fast — get in early and shape what it becomes.</p>
+            <h3 class="feature-title">Phase 3 Coming</h3>
+            <p class="feature-desc">Guilds, land NFTs, governance voting, and cross-platform play. The Pillars universe is expanding fast.</p>
           </div>
         </div>
       </div>
-
     </section>
 
-    <!-- ──────────────────────────────────────
-         MARKETPLACE VIEW
-    ─────────────────────────────────────── -->
+    <!-- MARKETPLACE VIEW (gated) -->
     <section id="view-marketplace" class="view" aria-label="Marketplace">
       <div class="section">
-        <h2 class="section-title">Marketplace</h2>
-        <p class="section-sub">Trade, collect, and own a piece of the Legends universe.</p>
-
-        <!-- Filters -->
-        <div class="marketplace-filters" role="group" aria-label="Category filters">
-          <button class="filter-btn active" data-filter="ALL">All Items</button>
-          <button class="filter-btn" data-filter="WEAPONS">Weapons</button>
-          <button class="filter-btn" data-filter="ARMOR">Armor</button>
-          <button class="filter-btn" data-filter="COLLECTIBLE">Collectibles</button>
-          <button class="filter-btn" data-filter="MEMBERSHIP">Membership</button>
-          <button class="filter-btn" data-filter="BUNDLE">Bundles</button>
+        <div class="view-gate-banner glass-card" id="marketplace-gate" style="display:none;">
+          <span>🔒</span>
+          <div>
+            <strong>Verification Required</strong>
+            <p>Sign in and verify your phone to access the Marketplace.</p>
+          </div>
+          <button class="btn btn-primary" onclick="window.__AuthManager?.openModal('login')">Sign In</button>
         </div>
-
-        <!-- Products -->
-        <div class="products-grid" id="products-grid" role="list">
-          <!-- Populated by JS -->
+        <div id="marketplace-content">
+          <h2 class="section-title">Marketplace</h2>
+          <p class="section-sub">Trade, collect, and own a piece of the Legends universe.</p>
+          <div class="marketplace-filters" role="group" aria-label="Category filters">
+            <button class="filter-btn active" data-filter="ALL">All Items</button>
+            <button class="filter-btn" data-filter="WEAPONS">Weapons</button>
+            <button class="filter-btn" data-filter="ARMOR">Armor</button>
+            <button class="filter-btn" data-filter="COLLECTIBLE">Collectibles</button>
+            <button class="filter-btn" data-filter="MEMBERSHIP">Membership</button>
+            <button class="filter-btn" data-filter="BUNDLE">Bundles</button>
+          </div>
+          <div class="products-grid" id="products-grid" role="list"></div>
         </div>
       </div>
     </section>
 
-    <!-- ──────────────────────────────────────
-         NEWS & UPDATES VIEW
-    ─────────────────────────────────────── -->
+    <!-- NEWS VIEW (gated) -->
     <section id="view-news" class="view" aria-label="News and Updates">
       <div class="section">
-        <h2 class="section-title">News &amp; Updates</h2>
-        <p class="section-sub">Stay sharp. Every Legend knows what's happening next.</p>
-        <div class="news-list" id="news-list" role="feed">
-          <!-- Populated by JS -->
+        <div class="view-gate-banner glass-card" id="news-gate" style="display:none;">
+          <span>🔒</span>
+          <div>
+            <strong>Verification Required</strong>
+            <p>Sign in and verify your phone to read News &amp; Updates.</p>
+          </div>
+          <button class="btn btn-primary" onclick="window.__AuthManager?.openModal('login')">Sign In</button>
+        </div>
+        <div id="news-content">
+          <h2 class="section-title">News &amp; Updates</h2>
+          <p class="section-sub">Stay sharp. Every Legend knows what's happening next.</p>
+          <div class="news-list" id="news-list" role="feed"></div>
         </div>
       </div>
     </section>
 
-    <!-- ──────────────────────────────────────
-         LIVE CHAT VIEW
-    ─────────────────────────────────────── -->
+    <!-- LIVE CHAT VIEW (gated) -->
     <section id="view-chat" class="view" aria-label="Live Chat">
       <div class="chat-wrap">
-        <h2 class="section-title">Live Chat</h2>
-        <p class="section-sub" style="margin-bottom:28px;">Connect with Legends in real time.</p>
-
-        <div class="glass-card chat-window">
-          <!-- Chat Header -->
-          <div class="chat-header">
-            <div class="chat-status-dot"></div>
-            <div>
-              <div class="chat-header-title">Pillars Community</div>
-              <div class="chat-header-sub">● Live — Legends Online</div>
+        <div class="view-gate-banner glass-card" id="chat-gate" style="display:none;">
+          <span>🔒</span>
+          <div>
+            <strong>Verification Required</strong>
+            <p>Sign in and verify your phone to access Live Chat.</p>
+          </div>
+          <button class="btn btn-primary" onclick="window.__AuthManager?.openModal('login')">Sign In</button>
+        </div>
+        <div id="chat-content">
+          <h2 class="section-title">Live Chat</h2>
+          <p class="section-sub" style="margin-bottom:28px;">Connect with Legends in real time.</p>
+          <div class="glass-card chat-window">
+            <div class="chat-header">
+              <div class="chat-status-dot"></div>
+              <div>
+                <div class="chat-header-title">Pillars Community</div>
+                <div class="chat-header-sub">● Live — Legends Online</div>
+              </div>
             </div>
-          </div>
-
-          <!-- Messages -->
-          <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
-            <!-- Populated by JS -->
-          </div>
-
-          <!-- Input -->
-          <div class="chat-input-area">
-            <input
-              type="text"
-              id="chat-input"
-              class="chat-input"
-              placeholder="Send a message to the Legends community..."
-              aria-label="Chat message input"
-              maxlength="300"
-            />
-            <button id="chat-send" class="chat-send" aria-label="Send message">SEND</button>
+            <div class="chat-messages" id="chat-messages" role="log" aria-live="polite"></div>
+            <div class="chat-input-area">
+              <input type="text" id="chat-input" class="chat-input" placeholder="Send a message to the Legends community..." maxlength="300" />
+              <button id="chat-send" class="chat-send">SEND</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ──────────────────────────────────────
-         PROFILE VIEW
-    ─────────────────────────────────────── -->
+    <!-- PROFILE VIEW -->
     <section id="view-profile" class="view" aria-label="Profile">
       <div class="profile-wrap">
-        <h2 class="section-title">Profile</h2>
-        <p class="section-sub" style="margin-bottom:28px;">Your Legend identity.</p>
-
-        <!-- Profile Hero Card -->
-        <div class="glass-card profile-hero">
-          <div class="profile-avatar-wrap">
-            <div class="profile-avatar">L</div>
-            <div class="profile-badge">✓</div>
+        <div class="view-gate-banner glass-card" id="profile-gate" style="display:none;">
+          <span>🔒</span>
+          <div>
+            <strong>Sign In Required</strong>
+            <p>Please sign in to view your Legend profile.</p>
           </div>
-          <div class="profile-name">Legend_Zero01</div>
-          <div class="profile-handle">@legend_zero · Tier: GOLD</div>
-          <div class="profile-stats">
-            <div class="p-stat">
-              <div class="p-stat-num">47</div>
-              <div class="p-stat-lbl">Items</div>
+          <button class="btn btn-primary" onclick="window.__AuthManager?.openModal('login')">Sign In</button>
+        </div>
+        <div id="profile-content">
+          <h2 class="section-title">Profile</h2>
+          <p class="section-sub" style="margin-bottom:28px;">Your Legend identity.</p>
+          <div class="glass-card profile-hero">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar" id="profile-avatar-initials">L</div>
+              <div class="profile-badge">✓</div>
             </div>
-            <div class="p-stat">
-              <div class="p-stat-num">12.5K</div>
-              <div class="p-stat-lbl">PLC</div>
+            <div class="profile-name" id="profile-display-name">Legend_Zero01</div>
+            <div class="profile-handle" id="profile-email-display">@legend · Tier: GOLD</div>
+            <div class="profile-stats">
+              <div class="p-stat"><div class="p-stat-num">47</div><div class="p-stat-lbl">Items</div></div>
+              <div class="p-stat"><div class="p-stat-num">12.5K</div><div class="p-stat-lbl">PLC</div></div>
+              <div class="p-stat"><div class="p-stat-num">284</div><div class="p-stat-lbl">Rank</div></div>
             </div>
-            <div class="p-stat">
-              <div class="p-stat-num">284</div>
-              <div class="p-stat-lbl">Rank</div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Account Details</div>
+            <div class="glass-card profile-info-list">
+              <div class="profile-info-row">
+                <span class="profile-info-label">Email</span>
+                <span class="profile-info-value" id="profile-email-val">—</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Member Since</span>
+                <span class="profile-info-value" id="profile-created-at">July 2025</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Legend Tier</span>
+                <span class="profile-info-value" style="color:var(--em-400)">🥇 GOLD</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Phone Verified</span>
+                <span class="profile-info-value" id="profile-phone-status">⏳ Pending</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Achievements</div>
+            <div class="glass-card profile-info-list">
+              <div class="profile-info-row">
+                <span class="profile-info-label">🏛️ Founding Legend</span>
+                <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">⚔️ First Purchase</span>
+                <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">💬 Community Voice</span>
+                <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">🔐 Phone Verified</span>
+                <span class="profile-info-value" id="profile-phone-achievement" style="color:var(--text-muted);opacity:0.5">Locked</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Preferences</div>
+            <div class="glass-card profile-info-list">
+              <div class="profile-info-row">
+                <span class="profile-info-label">Theme</span>
+                <button onclick="window.__ThemeEngine?.cycle()" style="background:none;border:1px solid var(--glass-border);padding:5px 14px;border-radius:6px;color:var(--em-400);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit">Change Theme</button>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Notifications</span>
+                <span class="profile-info-value">Enabled</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Sign Out</span>
+                <button onclick="window.__AuthManager?.signOut()" style="background:none;border:1px solid rgba(239,68,68,0.4);padding:5px 14px;border-radius:6px;color:#f87171;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit">Sign Out</button>
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- Info -->
-        <div class="profile-section">
-          <div class="profile-section-title">Account Details</div>
-          <div class="glass-card profile-info-list">
-            <div class="profile-info-row">
-              <span class="profile-info-label">Username</span>
-              <span class="profile-info-value">Legend_Zero01</span>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">Member Since</span>
-              <span class="profile-info-value">July 2025</span>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">Legend Tier</span>
-              <span class="profile-info-value" style="color:var(--em-400)">🥇 GOLD</span>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">Status</span>
-              <span class="profile-info-value" style="color:var(--em-400)">● Active</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Achievements -->
-        <div class="profile-section">
-          <div class="profile-section-title">Achievements</div>
-          <div class="glass-card profile-info-list">
-            <div class="profile-info-row">
-              <span class="profile-info-label">🏛️ Founding Legend</span>
-              <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">⚔️ First Purchase</span>
-              <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">💬 Community Voice</span>
-              <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">🏆 Season Champion</span>
-              <span class="profile-info-value" style="color:var(--text-muted);opacity:0.5">Locked</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Settings -->
-        <div class="profile-section">
-          <div class="profile-section-title">Preferences</div>
-          <div class="glass-card profile-info-list">
-            <div class="profile-info-row">
-              <span class="profile-info-label">Theme</span>
-              <button
-                onclick="ThemeEngine.cycle()"
-                style="background:none;border:1px solid var(--glass-border);padding:5px 14px;border-radius:6px;color:var(--em-400);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s"
-                id="profile-theme-btn"
-              >Change Theme</button>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">Notifications</span>
-              <span class="profile-info-value">Enabled</span>
-            </div>
-            <div class="profile-info-row">
-              <span class="profile-info-label">Language</span>
-              <span class="profile-info-value">English</span>
-            </div>
-          </div>
-        </div>
-
       </div>
     </section>
 
   </main>
 
-  <!-- ═══════════════════════════════════════════
-       FOOTER
-  ════════════════════════════════════════════ -->
+  <!-- FOOTER -->
   <footer id="footer" role="contentinfo">
-    <div>
-      <strong>"Do simple things repeatedly..."</strong>
-    </div>
-    <div class="footer-copy">
-      © 2025 PROJECT PILLARS BY LEGENDS · Phase 1 · All rights reserved.
-    </div>
+    <div><strong>"Do simple things repeatedly..."</strong></div>
+    <div class="footer-copy">© 2025 PROJECT PILLARS BY LEGENDS · Phase 2 · All rights reserved.</div>
   </footer>
 
-  <!-- App Script -->
-  <script src="app.js" type="module"></script>
-  <script>
-    // Expose ThemeEngine globally for inline onclick attributes
-    import('./app.js').catch(() => {});
-  </script>
-
+  <script type="module" src="app.js"></script>
 </body>
 </html>
