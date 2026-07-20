@@ -5,10 +5,12 @@
 
 import { AuthManager }       from './js/auth.js';
 import { PhoneVerification } from './js/phoneVerification.js';
+import { AdminPanel }        from './js/admin.js';
 
 /* ─── Expose globals for inline onclick handlers ────────────── */
 window.__AuthManager       = AuthManager;
 window.__PhoneVerification = PhoneVerification;
+window.__AdminPanel        = AdminPanel;
 
 /* ─── THEME ENGINE ─────────────────────────────────────────── */
 const ThemeEngine = (() => {
@@ -83,9 +85,11 @@ const Splash = (() => {
 
 /* ─── PROTECTED ROUTES ──────────────────────────────────────── */
 // These routes require auth + phone verification
-const PROTECTED = ['marketplace', 'news', 'chat'];
+const PROTECTED  = ['marketplace', 'news', 'chat'];
 // These routes require auth only (no phone needed)
-const AUTH_ONLY = ['profile'];
+const AUTH_ONLY  = ['profile'];
+// These routes require admin/superadmin/subadmin role
+const ADMIN_ONLY = ['admin'];
 
 /* ─── ROUTER ───────────────────────────────────────────────── */
 const Router = (() => {
@@ -115,6 +119,16 @@ const Router = (() => {
         window.showToast?.('Please sign in to view your profile.');
         return;
       }
+    }
+
+    // ── GATE: Admin-only routes ────────────────────────────────
+    if (ADMIN_ONLY.includes(hash)) {
+      if (!AuthManager.isLoggedIn()) {
+        AuthManager.openModal('login');
+        window.showToast?.('Admin access requires sign in.');
+        return;
+      }
+      // Role check happens inside initAdmin
     }
 
     _renderView(hash);
@@ -377,6 +391,217 @@ async function initProfile() {
   }
 }
 
+/* ─── ADMIN VIEW ────────────────────────────────────────────── */
+let _allUsers = [];
+
+async function initAdmin() {
+  const role = await AdminPanel.init();
+
+  const gate    = document.getElementById('admin-gate');
+  const content = document.getElementById('admin-content');
+
+  if (!AdminPanel.hasAccess()) {
+    gate.style.display    = 'flex';
+    content.style.display = 'none';
+    return;
+  }
+
+  gate.style.display    = 'none';
+  content.style.display = 'block';
+
+  // Badge
+  const badge = document.getElementById('admin-role-badge');
+  const labels = { superadmin: '👑 SUPER ADMIN', admin: '🛡️ ADMIN', subadmin: '⚙️ SUB-ADMIN' };
+  if (badge) badge.textContent = labels[role] || role;
+
+  // Tab switching
+  document.querySelectorAll('.admin-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-panel-tab').forEach(t => t.style.display = 'none');
+      btn.classList.add('active');
+      document.getElementById(`admin-tab-${btn.dataset.admintab}`).style.display = 'block';
+      if (btn.dataset.admintab === 'announcements') window.__AdminPanel_loadAnnouncements();
+    });
+  });
+
+  // Hide post form for subadmin (they can post but not manage)
+  // Actually subadmins CAN post, so keep form visible
+
+  // Load users
+  window.__AdminPanel_loadUsers();
+}
+
+window.__AdminPanel_loadUsers = async function() {
+  const wrap = document.getElementById('admin-users-table');
+  const statsRow = document.getElementById('admin-stats-row');
+  wrap.innerHTML = '<div class="admin-loading">Loading users…</div>';
+  try {
+    _allUsers = await AdminPanel.loadUsers();
+    _renderUsersTable(_allUsers);
+
+    // Stats
+    const total   = _allUsers.length;
+    const banned  = _allUsers.filter(u => u.is_banned).length;
+    const admins  = _allUsers.filter(u => ['superadmin','admin','subadmin'].includes(u.role)).length;
+    const verified = _allUsers.filter(u => u.phone_verified).length;
+    statsRow.innerHTML = `
+      <div class="admin-stat-card"><div class="admin-stat-num">${total}</div><div class="admin-stat-lbl">Total Users</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-num">${verified}</div><div class="admin-stat-lbl">Phone Verified</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-num">${admins}</div><div class="admin-stat-lbl">Staff</div></div>
+      <div class="admin-stat-card admin-stat-danger"><div class="admin-stat-num">${banned}</div><div class="admin-stat-lbl">Banned</div></div>
+    `;
+  } catch(e) {
+    wrap.innerHTML = `<div class="admin-loading" style="color:#f87171;">Error loading users: ${e.message}</div>`;
+  }
+};
+
+window.__AdminPanel_filterUsers = function(query) {
+  const q = query.toLowerCase();
+  const filtered = _allUsers.filter(u =>
+    (u.display_name || '').toLowerCase().includes(q) ||
+    (u.phone_number || '').includes(q)
+  );
+  _renderUsersTable(filtered);
+};
+
+function _renderUsersTable(users) {
+  const wrap    = document.getElementById('admin-users-table');
+  const myRole  = AdminPanel.getRole();
+  const roleOrder = { superadmin: 4, admin: 3, subadmin: 2, user: 1 };
+
+  if (!users.length) {
+    wrap.innerHTML = '<div class="admin-loading">No users found.</div>';
+    return;
+  }
+
+  const roleOpts = (u) => {
+    const opts = ['user', 'subadmin', 'admin', 'superadmin'];
+    return opts
+      .filter(r => {
+        if (myRole === 'admin' && r === 'superadmin') return false; // admin can't set superadmin
+        return true;
+      })
+      .map(r => `<option value="${r}" ${u.role === r ? 'selected' : ''}>${r}</option>`)
+      .join('');
+  };
+
+  const rows = users.map(u => {
+    const banBtn = AdminPanel.canBan()
+      ? `<button class="admin-action-btn ${u.is_banned ? 'btn-unban' : 'btn-ban'}"
+           onclick="window.__AdminPanel_toggleBan('${u.id}', ${u.is_banned})">
+           ${u.is_banned ? '✅ Unban' : '🚫 Ban'}
+         </button>`
+      : '';
+
+    const roleSelect = AdminPanel.canPromote()
+      ? `<select class="admin-role-select" onchange="window.__AdminPanel_changeRole('${u.id}', this.value)">
+           ${roleOpts(u)}
+         </select>`
+      : `<span class="admin-role-tag role-${u.role}">${u.role}</span>`;
+
+    return `
+      <tr class="${u.is_banned ? 'row-banned' : ''}">
+        <td>
+          <div class="admin-user-cell">
+            <div class="admin-user-avatar">${(u.display_name || '?').charAt(0).toUpperCase()}</div>
+            <div>
+              <div class="admin-user-name">${u.display_name || '—'}</div>
+              <div class="admin-user-meta">${u.phone_verified ? '✅ Verified' : '⏳ Unverified'} · ${u.legend_tier || 'BRONZE'}</div>
+            </div>
+          </div>
+        </td>
+        <td>${u.phone_number || '—'}</td>
+        <td>${roleSelect}</td>
+        <td>${u.is_banned ? '<span class="badge-banned">BANNED</span>' : '<span class="badge-active">ACTIVE</span>'}</td>
+        <td class="admin-actions-cell">${banBtn}</td>
+      </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+window.__AdminPanel_toggleBan = async function(userId, isBanned) {
+  try {
+    await AdminPanel.banUser(userId, !isBanned);
+    window.showToast?.(!isBanned ? '🚫 User banned.' : '✅ User unbanned.');
+    window.__AdminPanel_loadUsers();
+  } catch(e) {
+    window.showToast?.('Error: ' + e.message);
+  }
+};
+
+window.__AdminPanel_changeRole = async function(userId, role) {
+  try {
+    await AdminPanel.setRole(userId, role);
+    window.showToast?.(`✅ Role updated to ${role}`);
+    window.__AdminPanel_loadUsers();
+  } catch(e) {
+    window.showToast?.('Error: ' + e.message);
+  }
+};
+
+window.__AdminPanel_loadAnnouncements = async function() {
+  const list = document.getElementById('admin-announcements-list');
+  list.innerHTML = '<div class="admin-loading">Loading…</div>';
+  try {
+    const items = await AdminPanel.loadAnnouncements();
+    if (!items.length) { list.innerHTML = '<div class="admin-loading">No announcements yet.</div>'; return; }
+    const catIcon = { general:'📢', update:'🚀', event:'🎉', warning:'⚠️' };
+    list.innerHTML = items.map(a => `
+      <div class="glass-card admin-ann-card">
+        <div class="admin-ann-header">
+          <span class="admin-ann-cat">${catIcon[a.category] || '📢'} ${a.category.toUpperCase()}</span>
+          <span class="admin-ann-date">${new Date(a.created_at).toLocaleDateString()}</span>
+          ${AdminPanel.isAdmin() ? `<button class="admin-ann-del" onclick="window.__AdminPanel_deleteAnn('${a.id}')">🗑</button>` : ''}
+        </div>
+        <div class="admin-ann-title">${a.title}</div>
+        <div class="admin-ann-body">${a.body}</div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="admin-loading" style="color:#f87171;">Error: ${e.message}</div>`;
+  }
+};
+
+window.__AdminPanel_postAnnouncement = async function() {
+  const title = document.getElementById('ann-title').value.trim();
+  const body  = document.getElementById('ann-body').value.trim();
+  const cat   = document.getElementById('ann-category').value;
+  if (!title || !body) { window.showToast?.('Title and body are required.'); return; }
+  try {
+    await AdminPanel.postAnnouncement(title, body, cat);
+    document.getElementById('ann-title').value = '';
+    document.getElementById('ann-body').value  = '';
+    window.showToast?.('📢 Announcement posted!');
+    window.__AdminPanel_loadAnnouncements();
+  } catch(e) {
+    window.showToast?.('Error: ' + e.message);
+  }
+};
+
+window.__AdminPanel_deleteAnn = async function(id) {
+  if (!confirm('Delete this announcement?')) return;
+  try {
+    await AdminPanel.deleteAnnouncement(id);
+    window.showToast?.('🗑 Deleted.');
+    window.__AdminPanel_loadAnnouncements();
+  } catch(e) {
+    window.showToast?.('Error: ' + e.message);
+  }
+};
+
 /* ─── TOAST NOTIFICATION ────────────────────────────────────── */
 window.showToast = function(message) {
   document.querySelector('.toast')?.remove();
@@ -440,6 +665,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   Router.register('news',        initNews);
   Router.register('chat',        initChat);
   Router.register('profile',     initProfile);
+  Router.register('admin',       initAdmin);
 
   // 4. Splash — always hides after 1800ms no matter what
   Splash.show(1800);
@@ -457,10 +683,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 6. Start router — always fires, splash will have hidden by now
   setTimeout(() => Router.init(), 250);
 
-  // 7. Re-render home when auth state changes (show/hide CTA)
+  // 7. Show/hide admin nav links based on role
+  async function _updateAdminNav() {
+    const role = await AdminPanel.init();
+    const show = ['superadmin','admin','subadmin'].includes(role);
+    const desktopLink = document.getElementById('nav-admin-link');
+    const mobileLink  = document.getElementById('mobile-nav-admin-link');
+    if (desktopLink) desktopLink.style.display = show ? 'block' : 'none';
+    if (mobileLink)  mobileLink.style.display  = show ? 'flex'  : 'none';
+  }
+  _updateAdminNav();
+
+  // 8. Re-render home when auth state changes (show/hide CTA)
   AuthManager.onAuthStateChange(() => {
     const cta = document.getElementById('auth-cta-block');
     if (cta) cta.style.display = AuthManager.isLoggedIn() ? 'none' : 'flex';
     if (window.location.hash === '#profile') initProfile();
+    _updateAdminNav();
   });
 });

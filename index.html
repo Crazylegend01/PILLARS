@@ -238,6 +238,12 @@
           Profile
         </a>
       </li>
+      <li id="nav-admin-link" style="display:none;">
+        <a href="#admin" data-nav="admin" class="nav-admin-anchor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Admin
+        </a>
+      </li>
     </ul>
 
     <div class="nav-controls">
@@ -271,6 +277,10 @@
     <a href="#profile" data-nav="profile">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Profile
+    </a>
+    <a href="#admin" data-nav="admin" id="mobile-nav-admin-link" style="display:none; color:var(--em-400);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Admin
     </a>
   </nav>
 
@@ -534,6 +544,89 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         ADMIN PANEL VIEW
+    ════════════════════════════════════════════ -->
+    <section id="view-admin" class="view" aria-label="Admin Panel">
+      <div class="admin-wrap">
+
+        <!-- Access denied banner (shown if not admin) -->
+        <div class="view-gate-banner glass-card" id="admin-gate" style="display:none;">
+          <span>🚫</span>
+          <div><strong>Access Denied</strong><p>You do not have permission to view this panel.</p></div>
+        </div>
+
+        <div id="admin-content" style="display:none;">
+          <div class="admin-header">
+            <div>
+              <h2 class="section-title">⚙️ Admin Panel</h2>
+              <p class="section-sub">Manage the Pillars ecosystem</p>
+            </div>
+            <span id="admin-role-badge" class="admin-role-badge"></span>
+          </div>
+
+          <!-- Tabs -->
+          <div class="admin-tabs">
+            <button class="admin-tab active" data-admintab="users">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              Users
+            </button>
+            <button class="admin-tab" data-admintab="announcements">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 17H2a3 3 0 000 6h20v-6zM2 17L12 2l10 15"/></svg>
+              Announcements
+            </button>
+            <button class="admin-tab" data-admintab="marketplace">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              Marketplace
+            </button>
+          </div>
+
+          <!-- ── USERS TAB ─────────────────────────────────── -->
+          <div id="admin-tab-users" class="admin-panel-tab">
+            <div class="admin-toolbar">
+              <input type="text" id="admin-user-search" class="admin-search" placeholder="🔍  Search by name or phone…" oninput="window.__AdminPanel_filterUsers(this.value)" />
+              <button class="btn btn-primary btn-sm" onclick="window.__AdminPanel_loadUsers()">↻ Refresh</button>
+            </div>
+            <div class="admin-stats-row" id="admin-stats-row"></div>
+            <div class="admin-table-wrap" id="admin-users-table">
+              <div class="admin-loading">Loading users…</div>
+            </div>
+          </div>
+
+          <!-- ── ANNOUNCEMENTS TAB ─────────────────────────── -->
+          <div id="admin-tab-announcements" class="admin-panel-tab" style="display:none;">
+            <div id="admin-post-form-wrap">
+              <div class="glass-card admin-announce-form">
+                <h3 class="admin-form-title">📢 Post Announcement</h3>
+                <input  id="ann-title"    type="text"  placeholder="Title…"         class="admin-input" />
+                <textarea id="ann-body"   placeholder="Message body…" rows="4"       class="admin-input admin-textarea"></textarea>
+                <select id="ann-category" class="admin-input admin-select">
+                  <option value="general">📢 General</option>
+                  <option value="update">🚀 Update</option>
+                  <option value="event">🎉 Event</option>
+                  <option value="warning">⚠️ Warning</option>
+                </select>
+                <button class="btn btn-primary" onclick="window.__AdminPanel_postAnnouncement()">Post Announcement</button>
+              </div>
+            </div>
+            <div id="admin-announcements-list" class="admin-announce-list">
+              <div class="admin-loading">Loading announcements…</div>
+            </div>
+          </div>
+
+          <!-- ── MARKETPLACE TAB ───────────────────────────── -->
+          <div id="admin-tab-marketplace" class="admin-panel-tab" style="display:none;">
+            <div class="glass-card admin-coming-soon">
+              <div class="admin-coming-icon">🏪</div>
+              <h3>Marketplace Management</h3>
+              <p>Full listing management, approvals, and moderation coming in Phase 3.</p>
+            </div>
+          </div>
+
+        </div><!-- /admin-content -->
       </div>
     </section>
 
