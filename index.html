@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PROJECT PILLARS BY LEGENDS — Do simple things repeatedly. The ultimate Legends ecosystem." />
+  <meta name="theme-color" content="#10b981" />
+  <title>PILLARS BY LEGENDS</title>
+
+  <!-- Favicon using the logo -->
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       WATERMARK
+  ════════════════════════════════════════════ -->
+  <div id="watermark" aria-hidden="true"><span>BY LEGENDS</span></div>
+
+  <!-- ═══════════════════════════════════════════
+       ROUTE LOADER BAR
+  ════════════════════════════════════════════ -->
+  <div id="route-loader" role="progressbar" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════
+       SPLASH SCREEN
+  ════════════════════════════════════════════ -->
+  <div id="splash" role="status" aria-label="Loading Project Pillars">
+    <div class="hero-logo-wrap">
+      <img src="assets/logo.png" alt="Pillars by Legends Logo" class="splash-logo" />
+    </div>
+    <div class="splash-title">PILLARS</div>
+    <div class="splash-subtitle">By Legends · Est. 2025</div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    <div style="font-size:0.72rem;letter-spacing:0.25em;color:var(--text-muted);opacity:0.5;margin-top:4px;">
+      DO SIMPLE THINGS REPEATEDLY...
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════════════ -->
+  <nav id="nav" role="navigation" aria-label="Main Navigation">
+    <!-- Brand -->
+    <a href="#home" class="nav-brand" data-nav="home">
+      <img src="assets/logo.png" alt="Logo" class="nav-logo" />
+      <div class="nav-title">
+        <strong>PILLARS</strong>
+        <small>By Legends</small>
+      </div>
+    </a>
+
+    <!-- Desktop Links -->
+    <ul class="nav-links" role="list">
+      <li>
+        <a href="#home" data-nav="home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="#marketplace" data-nav="marketplace">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+          Marketplace
+        </a>
+      </li>
+      <li>
+        <a href="#news" data-nav="news">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/>
+          </svg>
+          News &amp; Updates
+        </a>
+      </li>
+      <li>
+        <a href="#chat" data-nav="chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+          Live Chat
+        </a>
+      </li>
+      <li>
+        <a href="#profile" data-nav="profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          Profile
+        </a>
+      </li>
+    </ul>
+
+    <!-- Controls -->
+    <div class="nav-controls">
+      <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">🖥️ SYSTEM</button>
+      <!-- Hamburger -->
+      <button id="hamburger" class="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <nav id="mobile-nav" aria-label="Mobile Navigation">
+    <a href="#home" data-nav="home">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </a>
+    <a href="#marketplace" data-nav="marketplace">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Marketplace
+    </a>
+    <a href="#news" data-nav="news">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/></svg>
+      News &amp; Updates
+    </a>
+    <a href="#chat" data-nav="chat">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Live Chat
+    </a>
+    <a href="#profile" data-nav="profile">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT
+  ════════════════════════════════════════════ -->
+  <main id="main">
+
+    <!-- ──────────────────────────────────────
+         HOME VIEW
+    ─────────────────────────────────────── -->
+    <section id="view-home" class="view" aria-label="Home">
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-logo-wrap">
+          <img src="assets/logo.png" alt="Pillars by Legends Logo" class="hero-logo" />
+          <div class="hero-logo-ring"></div>
+          <div class="hero-logo-ring2"></div>
+        </div>
+
+        <p class="hero-eyebrow">Phase 1 — Now Live</p>
+
+        <h1 class="hero-title">PROJECT<br /><span>PILLARS</span></h1>
+
+        <p class="hero-tagline">"Do simple things repeatedly..."</p>
+
+        <div class="hero-actions">
+          <a href="#marketplace" class="btn btn-primary" data-nav="marketplace">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            Enter Marketplace
+          </a>
+          <a href="#news" class="btn btn-glass" data-nav="news">
+            Latest Updates
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+          <div class="glass-card stat-card">
+            <div class="stat-num" data-target="12500" data-plus="true">0+</div>
+            <div class="stat-label">Legends</div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-num" data-target="850" data-plus="true">0+</div>
+            <div class="stat-label">Items</div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-num" data-target="1" data-suffix="M+ PLC">0</div>
+            <div class="stat-label">Volume</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURES -->
+      <div class="section">
+        <h2 class="section-title">Why Pillars?</h2>
+        <p class="section-sub">Built by Legends, for Legends. Every pillar stands for something real.</p>
+        <div class="features-grid">
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🏛️</div>
+            <h3 class="feature-title">Legendary Foundation</h3>
+            <p class="feature-desc">Built on principles of discipline, community, and mastery. Every feature is designed to reward consistent effort — because greatness is built one rep at a time.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">💎</div>
+            <h3 class="feature-title">True Ownership</h3>
+            <p class="feature-desc">Your items, your identity. From NFT collectibles to exclusive skins — everything you earn in Pillars belongs to you and you alone.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Live Ecosystem</h3>
+            <p class="feature-desc">Real-time trading, live chat, and community events keep the world of Pillars alive 24/7. There's always something happening for active Legends.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🏆</div>
+            <h3 class="feature-title">Compete & Conquer</h3>
+            <p class="feature-desc">Ranked tournaments, seasonal leaderboards, and Championship events with massive Pillars Coin (PLC) prize pools. Prove you're a Legend.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3 class="feature-title">Global Community</h3>
+            <p class="feature-desc">Thousands of Legends across the globe — trading, strategising, and growing together. Phase 2 brings Guilds and Land ownership to deepen those bonds.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🔮</div>
+            <h3 class="feature-title">Phase 2 Coming</h3>
+            <p class="feature-desc">Guilds, land NFTs, governance voting, and cross-platform play. The Pillars universe is expanding fast — get in early and shape what it becomes.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ──────────────────────────────────────
+         MARKETPLACE VIEW
+    ─────────────────────────────────────── -->
+    <section id="view-marketplace" class="view" aria-label="Marketplace">
+      <div class="section">
+        <h2 class="section-title">Marketplace</h2>
+        <p class="section-sub">Trade, collect, and own a piece of the Legends universe.</p>
+
+        <!-- Filters -->
+        <div class="marketplace-filters" role="group" aria-label="Category filters">
+          <button class="filter-btn active" data-filter="ALL">All Items</button>
+          <button class="filter-btn" data-filter="WEAPONS">Weapons</button>
+          <button class="filter-btn" data-filter="ARMOR">Armor</button>
+          <button class="filter-btn" data-filter="COLLECTIBLE">Collectibles</button>
+          <button class="filter-btn" data-filter="MEMBERSHIP">Membership</button>
+          <button class="filter-btn" data-filter="BUNDLE">Bundles</button>
+        </div>
+
+        <!-- Products -->
+        <div class="products-grid" id="products-grid" role="list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────
+         NEWS & UPDATES VIEW
+    ─────────────────────────────────────── -->
+    <section id="view-news" class="view" aria-label="News and Updates">
+      <div class="section">
+        <h2 class="section-title">News &amp; Updates</h2>
+        <p class="section-sub">Stay sharp. Every Legend knows what's happening next.</p>
+        <div class="news-list" id="news-list" role="feed">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────
+         LIVE CHAT VIEW
+    ─────────────────────────────────────── -->
+    <section id="view-chat" class="view" aria-label="Live Chat">
+      <div class="chat-wrap">
+        <h2 class="section-title">Live Chat</h2>
+        <p class="section-sub" style="margin-bottom:28px;">Connect with Legends in real time.</p>
+
+        <div class="glass-card chat-window">
+          <!-- Chat Header -->
+          <div class="chat-header">
+            <div class="chat-status-dot"></div>
+            <div>
+              <div class="chat-header-title">Pillars Community</div>
+              <div class="chat-header-sub">● Live — Legends Online</div>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Input -->
+          <div class="chat-input-area">
+            <input
+              type="text"
+              id="chat-input"
+              class="chat-input"
+              placeholder="Send a message to the Legends community..."
+              aria-label="Chat message input"
+              maxlength="300"
+            />
+            <button id="chat-send" class="chat-send" aria-label="Send message">SEND</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────
+         PROFILE VIEW
+    ─────────────────────────────────────── -->
+    <section id="view-profile" class="view" aria-label="Profile">
+      <div class="profile-wrap">
+        <h2 class="section-title">Profile</h2>
+        <p class="section-sub" style="margin-bottom:28px;">Your Legend identity.</p>
+
+        <!-- Profile Hero Card -->
+        <div class="glass-card profile-hero">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar">L</div>
+            <div class="profile-badge">✓</div>
+          </div>
+          <div class="profile-name">Legend_Zero01</div>
+          <div class="profile-handle">@legend_zero · Tier: GOLD</div>
+          <div class="profile-stats">
+            <div class="p-stat">
+              <div class="p-stat-num">47</div>
+              <div class="p-stat-lbl">Items</div>
+            </div>
+            <div class="p-stat">
+              <div class="p-stat-num">12.5K</div>
+              <div class="p-stat-lbl">PLC</div>
+            </div>
+            <div class="p-stat">
+              <div class="p-stat-num">284</div>
+              <div class="p-stat-lbl">Rank</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="profile-section">
+          <div class="profile-section-title">Account Details</div>
+          <div class="glass-card profile-info-list">
+            <div class="profile-info-row">
+              <span class="profile-info-label">Username</span>
+              <span class="profile-info-value">Legend_Zero01</span>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">Member Since</span>
+              <span class="profile-info-value">July 2025</span>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">Legend Tier</span>
+              <span class="profile-info-value" style="color:var(--em-400)">🥇 GOLD</span>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">Status</span>
+              <span class="profile-info-value" style="color:var(--em-400)">● Active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="profile-section">
+          <div class="profile-section-title">Achievements</div>
+          <div class="glass-card profile-info-list">
+            <div class="profile-info-row">
+              <span class="profile-info-label">🏛️ Founding Legend</span>
+              <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">⚔️ First Purchase</span>
+              <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">💬 Community Voice</span>
+              <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">🏆 Season Champion</span>
+              <span class="profile-info-value" style="color:var(--text-muted);opacity:0.5">Locked</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="profile-section">
+          <div class="profile-section-title">Preferences</div>
+          <div class="glass-card profile-info-list">
+            <div class="profile-info-row">
+              <span class="profile-info-label">Theme</span>
+              <button
+                onclick="ThemeEngine.cycle()"
+                style="background:none;border:1px solid var(--glass-border);padding:5px 14px;border-radius:6px;color:var(--em-400);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s"
+                id="profile-theme-btn"
+              >Change Theme</button>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">Notifications</span>
+              <span class="profile-info-value">Enabled</span>
+            </div>
+            <div class="profile-info-row">
+              <span class="profile-info-label">Language</span>
+              <span class="profile-info-value">English</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════ -->
+  <footer id="footer" role="contentinfo">
+    <div>
+      <strong>"Do simple things repeatedly..."</strong>
+    </div>
+    <div class="footer-copy">
+      © 2025 PROJECT PILLARS BY LEGENDS · Phase 1 · All rights reserved.
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js" type="module"></script>
+  <script>
+    // Expose ThemeEngine globally for inline onclick attributes
+    import('./app.js').catch(() => {});
+  </script>
+
+</body>
+</html>
