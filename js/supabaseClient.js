@@ -9,8 +9,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 // ── CONFIGURATION ────────────────────────────────────────────
-export const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
-export const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+export const SUPABASE_URL      = 'https://yebifwddhxuefysqlwrr.supabase.co';
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllYmlmd2RkaHh1ZWZ5c3Fsd3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0OTA5OTQsImV4cCI6MjEwMDA2Njk5NH0.sHJsrJQDjD_pVi9DsYBwh9EAvnXRsTrr3rsALVwXq68';
 
 // ── CLIENT INSTANCE ──────────────────────────────────────────
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
