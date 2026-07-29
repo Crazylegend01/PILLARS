@@ -170,6 +170,76 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
+       PROFILE SETUP MODAL (Phase 3)
+  ════════════════════════════════════════════ -->
+  <div id="profile-setup-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Profile Setup">
+    <div class="modal-card profile-setup-card">
+
+      <button id="setup-close-btn" class="modal-close-btn" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="modal-logo-wrap">
+        <img src="assets/logo.png" alt="Logo" class="modal-logo" />
+      </div>
+      <h2 class="modal-title">Build Your Legend</h2>
+      <p class="modal-sub">Complete your profile to unlock the full Pillars experience.</p>
+
+      <div id="setup-error" class="auth-message" style="display:none;"></div>
+
+      <!-- ── Avatar Upload ── -->
+      <div class="setup-avatar-section">
+        <div id="avatar-preview" class="setup-avatar-preview" title="Click to upload photo">
+          <div id="avatar-initials" class="setup-avatar-initials">L</div>
+          <div class="setup-avatar-overlay">📷 Upload</div>
+        </div>
+        <input type="file" id="avatar-file-input" accept="image/*" style="display:none;" />
+        <p class="setup-avatar-hint">Click the circle to upload a profile photo</p>
+      </div>
+
+      <!-- ── Form Grid ── -->
+      <div class="setup-form-grid">
+        <div class="form-group">
+          <label class="form-label" for="setup-display-name">Display Name <span class="req">*</span></label>
+          <input id="setup-display-name" class="form-input" type="text" placeholder="LegendZero" maxlength="50" autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-profile-tag">
+            Profile Tag <span class="req">*</span>
+            <span style="color:var(--em-600);font-size:0.75rem;font-weight:500;">@unique · permanent</span>
+          </label>
+          <input id="setup-profile-tag" class="form-input" type="text" placeholder="@yourname" maxlength="24" autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-language">Language</label>
+          <select id="setup-language" class="form-input"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-business-name">
+            Business Name
+            <span id="business-lock-badge" class="business-lock-badge" style="display:none;">🔒 Locked Forever</span>
+          </label>
+          <input id="setup-business-name" class="form-input" type="text" placeholder="Optional — permanent once saved" maxlength="80" />
+          <div id="business-name-lock-hint" class="setup-lock-hint" style="display:none;">
+            🔒 Your business name is <strong>permanent</strong> — it cannot be changed after saving.
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Social Links ── -->
+      <div class="setup-social-section">
+        <div class="setup-section-label">Social Links</div>
+        <div id="social-links-container"></div>
+        <button type="button" id="add-social-btn" class="btn btn-glass" style="margin-top:10px;padding:8px 18px;font-size:0.82rem;">
+          + Add Social Link
+        </button>
+      </div>
+
+      <button id="setup-save-btn" class="btn btn-primary btn-full" type="button">SAVE PROFILE</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
        NAVIGATION
   ════════════════════════════════════════════ -->
   <nav id="nav" role="navigation" aria-label="Main Navigation">
@@ -221,6 +291,7 @@
     </ul>
 
     <div class="nav-controls">
+      <button id="mode-toggle" class="mode-toggle-btn mode-buyer" type="button" aria-label="Switch mode">🛍️ BUYER</button>
       <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">🖥️ SYSTEM</button>
       <!-- Auth state injected here by auth.js -->
       <div id="nav-auth"></div>
@@ -271,7 +342,7 @@
           <div class="hero-logo-ring"></div>
           <div class="hero-logo-ring2"></div>
         </div>
-        <p class="hero-eyebrow">Phase 1 &amp; 2 — Now Live</p>
+        <p class="hero-eyebrow">Authentication · Profiles · Marketplace · Live Chat</p>
         <h1 class="hero-title">PROJECT<br /><span>PILLARS</span></h1>
         <p class="hero-tagline">"Do simple things repeatedly..."</p>
         <div class="hero-actions">
@@ -329,7 +400,7 @@
           <div class="glass-card feature-card">
             <div class="feature-icon">🔐</div>
             <h3 class="feature-title">Secure &amp; Verified</h3>
-            <p class="feature-desc">Phase 2 brings full authentication and phone verification — ensuring every Legend in the ecosystem is real, trusted, and protected.</p>
+            <p class="feature-desc">Full authentication, Google OAuth, and phone registration ensure every Legend in the ecosystem is real, trusted, and protected.</p>
           </div>
           <div class="glass-card feature-card">
             <div class="feature-icon">⚡</div>
@@ -343,8 +414,8 @@
           </div>
           <div class="glass-card feature-card">
             <div class="feature-icon">🔮</div>
-            <h3 class="feature-title">Phase 3 Coming</h3>
-            <p class="feature-desc">Guilds, land NFTs, governance voting, and cross-platform play. The Pillars universe is expanding fast.</p>
+            <h3 class="feature-title">Guilds &amp; Land NFTs</h3>
+            <p class="feature-desc">Guild systems, land NFTs, governance voting, and cross-platform play. The Pillars universe is expanding fast — stay ready.</p>
           </div>
         </div>
       </div>
@@ -445,34 +516,53 @@
           <div class="glass-card profile-hero">
             <div class="profile-avatar-wrap">
               <div class="profile-avatar" id="profile-avatar-initials">L</div>
+              <img id="profile-avatar-img" src="" alt="Avatar" class="profile-avatar-photo" style="display:none;" />
               <div class="profile-badge">✓</div>
             </div>
-            <div class="profile-name" id="profile-display-name">Legend_Zero01</div>
-            <div class="profile-handle" id="profile-email-display">@legend · Tier: GOLD</div>
+            <span id="profile-mode-badge" class="mode-badge mode-badge-buyer">🛍️ BUYER MODE</span>
+            <div class="profile-name" id="profile-display-name">Legend</div>
+            <div class="profile-handle" id="profile-email-display">@legend · BRONZE</div>
             <div class="profile-stats">
               <div class="p-stat"><div class="p-stat-num">47</div><div class="p-stat-lbl">Items</div></div>
               <div class="p-stat"><div class="p-stat-num">12.5K</div><div class="p-stat-lbl">PLC</div></div>
               <div class="p-stat"><div class="p-stat-num">284</div><div class="p-stat-lbl">Rank</div></div>
             </div>
+            <button onclick="window.__ProfileManager?.openSetupModal()" class="btn btn-glass" style="padding:8px 22px;font-size:0.82rem;margin-top:4px;">✏️ Edit Profile</button>
           </div>
 
           <div class="profile-section">
             <div class="profile-section-title">Account Details</div>
             <div class="glass-card profile-info-list">
               <div class="profile-info-row">
+                <span class="profile-info-label">Display Name</span>
+                <span class="profile-info-value" id="profile-display-name-val">—</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Profile Tag</span>
+                <span class="profile-info-value" id="profile-tag-val" style="color:var(--em-400)">—</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Business Name</span>
+                <span class="profile-info-value" id="profile-business-name-val">—</span>
+              </div>
+              <div class="profile-info-row">
+                <span class="profile-info-label">Language</span>
+                <span class="profile-info-value" id="profile-language-val">—</span>
+              </div>
+              <div class="profile-info-row">
                 <span class="profile-info-label">Email</span>
                 <span class="profile-info-value" id="profile-email-val">—</span>
               </div>
               <div class="profile-info-row">
                 <span class="profile-info-label">Member Since</span>
-                <span class="profile-info-value" id="profile-created-at">July 2025</span>
+                <span class="profile-info-value" id="profile-created-at">—</span>
               </div>
               <div class="profile-info-row">
                 <span class="profile-info-label">Legend Tier</span>
-                <span class="profile-info-value" style="color:var(--em-400)">🥇 GOLD</span>
+                <span class="profile-info-value" style="color:var(--em-400)" id="profile-tier-val">BRONZE</span>
               </div>
               <div class="profile-info-row">
-                <span class="profile-info-label">Phone Verified</span>
+                <span class="profile-info-label">Phone</span>
                 <span class="profile-info-value" id="profile-phone-status">⏳ Pending</span>
               </div>
             </div>
@@ -494,9 +584,16 @@
                 <span class="profile-info-value" style="color:var(--em-400)">Unlocked</span>
               </div>
               <div class="profile-info-row">
-                <span class="profile-info-label">🔐 Phone Verified</span>
+                <span class="profile-info-label">🔐 Phone Registered</span>
                 <span class="profile-info-value" id="profile-phone-achievement" style="color:var(--text-muted);opacity:0.5">Locked</span>
               </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Social Links</div>
+            <div class="glass-card profile-info-list" style="padding:18px 20px;">
+              <div id="profile-social-links" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
             </div>
           </div>
 
