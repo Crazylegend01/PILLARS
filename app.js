@@ -6,11 +6,13 @@
 import { AuthManager }       from './js/auth.js';
 import { PhoneVerification } from './js/phoneVerification.js';
 import { AdminPanel }        from './js/admin.js';
+import { ProfileManager }    from './js/profile.js';
 
 /* ─── Expose globals for inline onclick handlers ────────────── */
 window.__AuthManager       = AuthManager;
 window.__PhoneVerification = PhoneVerification;
 window.__AdminPanel        = AdminPanel;
+window.__ProfileManager    = ProfileManager;
 
 /* ─── THEME ENGINE ─────────────────────────────────────────── */
 const ThemeEngine = (() => {
@@ -84,7 +86,7 @@ const Splash = (() => {
 })();
 
 /* ─── PROTECTED ROUTES ──────────────────────────────────────── */
-// These routes require auth + phone verification
+// These routes require auth + phone registration
 const PROTECTED  = ['marketplace', 'news', 'chat'];
 // These routes require auth only (no phone needed)
 const AUTH_ONLY  = ['profile'];
@@ -262,11 +264,11 @@ function renderProducts(filter) {
 
 /* ─── NEWS VIEW ─────────────────────────────────────────────── */
 const NEWS = [
-  { day: '18', month: 'JUL', tag: 'UPDATE',   title: 'Phase 2 Live — Auth & Phone Verification!',        excerpt: 'Supabase authentication, Google OAuth, and mandatory phone verification are now live across the Pillars ecosystem. Security first.' },
-  { day: '12', month: 'JUL', tag: 'FEATURE',  title: 'Live Chat System Introduced',                      excerpt: 'Real-time communication is now available across all Legend tiers. Connect, share strategies, and form alliances.' },
-  { day: '05', month: 'JUL', tag: 'EVENT',    title: "Champion's Tournament Season 1 Begins",            excerpt: 'The first Pillars tournament kicks off with 1,000,000 PLC in prizes. Register your squad and compete for the Champion Crown.' },
-  { day: '28', month: 'JUN', tag: 'ECONOMY',  title: 'Pillars Coin (PLC) Tokenomics Revealed',          excerpt: 'Full PLC tokenomics whitepaper published. Read how the in-game economy rewards skill, loyalty, and community.' },
-  { day: '20', month: 'JUN', tag: 'ROADMAP',  title: 'Phase 3 Teaser — Guilds & Land Ownership',        excerpt: 'Phase 3 introduces guild systems, land NFTs, and governance voting. The Legends ecosystem is just getting started.' },
+  { day: '29', month: 'JUL', tag: 'UPDATE',   title: 'Profile Setup & Buyer/Seller Modes Now Live!',    excerpt: 'Legends can now build a full profile — avatar, display name, profile tag, business name, and social links. Switch between Buyer and Seller mode anytime.' },
+  { day: '18', month: 'JUL', tag: 'FEATURE',  title: 'Authentication & Phone Registration Live',        excerpt: 'Supabase authentication, Google OAuth, and phone registration are now live across the Pillars ecosystem. Security-first, always.' },
+  { day: '12', month: 'JUL', tag: 'FEATURE',  title: 'Live Chat System Introduced',                    excerpt: 'Real-time communication is now available across all Legend tiers. Connect, share strategies, and form alliances.' },
+  { day: '05', month: 'JUL', tag: 'EVENT',    title: "Champion's Tournament Season 1 Begins",          excerpt: 'The first Pillars tournament kicks off with 1,000,000 PLC in prizes. Register your squad and compete for the Champion Crown.' },
+  { day: '28', month: 'JUN', tag: 'ECONOMY',  title: 'Pillars Coin (PLC) Tokenomics Revealed',        excerpt: 'Full PLC tokenomics whitepaper published. Read how the in-game economy rewards skill, loyalty, and community.' },
 ];
 
 function initNews() {
@@ -290,8 +292,8 @@ function initNews() {
 /* ─── CHAT VIEW ─────────────────────────────────────────────── */
 const INITIAL_CHAT = [
   { self: false, user: 'LG', name: 'LegendGod',     text: 'Welcome to Pillars Community Chat! Do simple things repeatedly... 🏛️' },
-  { self: false, user: 'PX', name: 'PixelKnight',   text: 'Phase 2 is live! Auth + phone verification working perfectly.' },
-  { self: false, user: 'EQ', name: 'EmeraldQueen',  text: 'Already grabbed the Champion Trophy NFT 🏆 Security feels solid.' },
+  { self: false, user: 'PX', name: 'PixelKnight',   text: 'Just set up my profile and switched to Seller mode — marketplace is looking 🔥' },
+  { self: false, user: 'EQ', name: 'EmeraldQueen',  text: 'Already grabbed the Champion Trophy NFT 🏆 This ecosystem is built different.' },
 ];
 const REPLIES = [
   'Welcome, Legend! The grind never stops 💪',
@@ -365,31 +367,76 @@ async function initProfile() {
   }
   hideGate('profile-gate', 'profile-content');
 
-  const email    = user.email || '';
-  const initials = email.charAt(0).toUpperCase();
-  const created  = new Date(user.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  // Fetch latest profile
+  const profile = await ProfileManager.fetchProfile();
+  const email   = user.email || '';
+  const created = new Date(user.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
-  document.getElementById('profile-avatar-initials').textContent = initials;
-  document.getElementById('profile-display-name').textContent    = email.split('@')[0] || 'Legend';
-  document.getElementById('profile-email-display').textContent   = `@${email.split('@')[0]} · Tier: GOLD`;
-  document.getElementById('profile-email-val').textContent       = email;
-  document.getElementById('profile-created-at').textContent      = created;
+  // Avatar
+  const avatarEl    = document.getElementById('profile-avatar-initials');
+  const avatarImgEl = document.getElementById('profile-avatar-img');
+  const displayName = profile?.display_name || email.split('@')[0] || 'Legend';
+  const tag         = profile?.profile_tag  ? '@' + profile.profile_tag : '@' + email.split('@')[0];
+
+  if (avatarEl)    avatarEl.textContent = displayName.charAt(0).toUpperCase();
+  if (avatarImgEl && profile?.avatar_url) {
+    avatarImgEl.src             = profile.avatar_url;
+    avatarImgEl.style.display   = 'block';
+    if (avatarEl) avatarEl.style.display = 'none';
+  }
+
+  document.getElementById('profile-display-name').textContent  = displayName;
+  document.getElementById('profile-email-display').textContent = `${tag} · ${profile?.legend_tier || 'BRONZE'}`;
+  document.getElementById('profile-email-val').textContent     = email;
+  document.getElementById('profile-created-at').textContent    = created;
+
+  // Mode badge
+  const modeBadge = document.getElementById('profile-mode-badge');
+  if (modeBadge) {
+    const isSeller      = ProfileManager.getMode() === 'SELLER';
+    modeBadge.textContent = isSeller ? '🛒 SELLER MODE' : '🛍️ BUYER MODE';
+    modeBadge.className   = `mode-badge ${isSeller ? 'mode-badge-seller' : 'mode-badge-buyer'}`;
+  }
+
+  // Business name row
+  const bnEl = document.getElementById('profile-business-name-val');
+  if (bnEl) bnEl.textContent = profile?.business_name || '—';
+
+  // Profile tag row
+  const tagEl = document.getElementById('profile-tag-val');
+  if (tagEl)  tagEl.textContent = profile?.profile_tag ? '@' + profile.profile_tag : '—';
+
+  // Language row
+  const langEl = document.getElementById('profile-language-val');
+  if (langEl) langEl.textContent = profile?.language || 'en';
 
   // Phone verification status
-  const verified = PhoneVerification.isVerified();
-  const phoneStatusEl      = document.getElementById('profile-phone-status');
-  const phoneAchievementEl = document.getElementById('profile-phone-achievement');
+  const verified       = PhoneVerification.isVerified();
+  const phoneStatusEl  = document.getElementById('profile-phone-status');
+  const phoneAchEl     = document.getElementById('profile-phone-achievement');
 
   if (verified) {
-    phoneStatusEl.textContent      = '✅ Verified';
-    phoneStatusEl.style.color      = 'var(--em-400)';
-    phoneAchievementEl.textContent = 'Unlocked';
-    phoneAchievementEl.style.color = 'var(--em-400)';
-    phoneAchievementEl.style.opacity = '1';
+    if (phoneStatusEl) { phoneStatusEl.textContent = '✅ Registered'; phoneStatusEl.style.color = 'var(--em-400)'; }
+    if (phoneAchEl)    { phoneAchEl.textContent = 'Unlocked'; phoneAchEl.style.color = 'var(--em-400)'; phoneAchEl.style.opacity = '1'; }
   } else {
-    phoneStatusEl.innerHTML = `⏳ Not Verified &nbsp;<button onclick="window.__PhoneVerification?.openPhoneModal()" style="background:none;border:1px solid var(--glass-border);padding:3px 10px;border-radius:5px;color:var(--em-400);font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit">Verify Now</button>`;
+    if (phoneStatusEl) phoneStatusEl.innerHTML = `⏳ Pending &nbsp;<button onclick="window.__PhoneVerification?.openPhoneModal()" style="background:none;border:1px solid var(--glass-border);padding:3px 10px;border-radius:5px;color:var(--em-400);font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit">Register</button>`;
+  }
+
+  // Social links
+  const socialEl = document.getElementById('profile-social-links');
+  if (socialEl) {
+    const links = profile?.social_links || [];
+    if (links.length) {
+      socialEl.innerHTML = links.map(l =>
+        `<a href="${l.url}" target="_blank" rel="noopener" class="profile-social-link">${l.platform}</a>`
+      ).join('');
+    } else {
+      socialEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">No social links added.</span>';
+    }
   }
 }
+
+window.__refreshProfile = initProfile;
 
 /* ─── ADMIN VIEW ────────────────────────────────────────────── */
 let _allUsers = [];
@@ -679,6 +726,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try { await withTimeout(PhoneVerification.init(), 3000); }
   catch (e) { console.warn('Phone init failed, continuing anyway:', e); }
+
+  try { await withTimeout(ProfileManager.init(), 3000); }
+  catch (e) { console.warn('Profile init failed, continuing anyway:', e); }
 
   // 6. Start router — always fires, splash will have hidden by now
   setTimeout(() => Router.init(), 250);
