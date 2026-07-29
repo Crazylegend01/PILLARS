@@ -120,16 +120,16 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
-       PHONE VERIFICATION MODAL (Compulsory Gate)
+       PHONE REGISTRATION MODAL (Compulsory Gate)
   ════════════════════════════════════════════ -->
-  <div id="phone-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Phone Verification">
+  <div id="phone-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Phone Registration">
     <div class="modal-card phone-modal-card">
 
       <!-- Icon -->
       <div class="phone-modal-icon">📱</div>
 
-      <h2 class="modal-title">Phone Verification Required</h2>
-      <p class="modal-sub">Verify your number to unlock Marketplace, News &amp; Live Chat.</p>
+      <h2 class="modal-title">Phone Number Required</h2>
+      <p class="modal-sub">Register your number to unlock Marketplace, News &amp; Live Chat.</p>
 
       <!-- Error banner -->
       <div id="phone-error" class="auth-message" style="display:none;"></div>
@@ -148,47 +148,21 @@
             type="tel"
             placeholder="+1234567890"
             autocomplete="tel"
-            aria-label="Phone number in E.164 format"
+            aria-label="Phone number in international format"
           />
         </div>
         <button id="phone-send-btn" class="btn btn-primary btn-full" type="button">
-          SEND VERIFICATION CODE
+          REGISTER NUMBER
         </button>
         <p class="auth-footer-note" style="margin-top:10px;">
-          We'll send a one-time code via SMS. Standard rates may apply.
+          Your number is kept private and used for account security only.
         </p>
       </div>
 
-      <!-- ── STEP 2: Enter OTP ── -->
-      <div id="phone-step-otp" class="phone-step" style="display:none;">
-        <p class="phone-step-label">
-          Enter the 6-digit code sent to<br/>
-          <strong id="otp-phone-display" style="color:var(--em-400);"></strong>
-        </p>
-        <div class="form-group" style="width:100%;">
-          <label class="form-label" for="otp-input">Verification Code</label>
-          <input
-            id="otp-input"
-            class="form-input otp-input"
-            type="text"
-            inputmode="numeric"
-            placeholder="······"
-            maxlength="6"
-            autocomplete="one-time-code"
-            aria-label="6-digit OTP code"
-          />
-        </div>
-        <button id="otp-verify-btn" class="btn btn-primary btn-full" type="button">VERIFY</button>
-        <div class="otp-actions">
-          <button id="otp-back-btn" class="link-btn" type="button">← Change Number</button>
-          <button id="otp-resend-btn" class="link-btn" type="button">Resend Code</button>
-        </div>
-      </div>
-
-      <!-- ── STEP 3: Success ── -->
+      <!-- ── STEP 2: Success ── -->
       <div id="phone-step-done" class="phone-step phone-step-done" style="display:none;">
         <div class="verified-icon">✅</div>
-        <h3 style="color:var(--em-300);font-size:1.3rem;font-weight:800;">Phone Verified!</h3>
+        <h3 style="color:var(--em-300);font-size:1.3rem;font-weight:800;">Number Registered!</h3>
         <p style="color:var(--text-muted);font-size:0.9rem;">You now have full Legend access. Redirecting...</p>
       </div>
 
