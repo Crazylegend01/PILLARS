@@ -1,9 +1,9 @@
 /* ============================================================
    PROJECT PILLARS BY LEGENDS — js/phoneVerification.js
-   Phone Verification Gate
+   Phone Registration Gate (No SMS / No OTP)
    · Intercepts protected routes (News, Chat, Marketplace)
-   · Sends OTP via Supabase → Twilio
-   · Stores verified phone in `profiles` table
+   · Collects phone number and saves directly to profiles
+   · Marks phone_verified = true without SMS confirmation
    ============================================================ */
 
 import { supabase } from './supabaseClient.js';
@@ -12,8 +12,7 @@ import { AuthManager } from './auth.js';
 /* ─── PHONE VERIFICATION MANAGER ───────────────────────────── */
 export const PhoneVerification = (() => {
   let _verified     = false;
-  let _pendingPhone = '';
-  let _pendingCb    = null;   // callback to fire after verification
+  let _pendingCb    = null;   // callback to fire after registration
 
   // ── Check DB for verified status ────────────────────────────
   async function checkVerified() {
@@ -31,15 +30,14 @@ export const PhoneVerification = (() => {
     return _verified;
   }
 
-  // ── Public: is phone verified? ───────────────────────────────
+  // ── Public: is phone registered? ────────────────────────────
   function isVerified() { return _verified; }
 
-  // ── Gate: check auth + verification, then run callback ──────
+  // ── Gate: check auth + registration, then run callback ──────
   async function gate(routeName, callback) {
     // 1. Must be logged in first
     if (!AuthManager.isLoggedIn()) {
       AuthManager.openModal('login');
-      // After login, re-try navigating to the same route
       AuthManager.onAuthStateChange(async user => {
         if (user) await gate(routeName, callback);
       });
@@ -47,12 +45,12 @@ export const PhoneVerification = (() => {
       return;
     }
 
-    // 2. Must have verified phone
+    // 2. Must have registered phone
     const verified = await checkVerified();
     if (!verified) {
       _pendingCb = callback;
       openPhoneModal();
-      window.showToast?.('📱 Phone verification required to access ' + routeName);
+      window.showToast?.('📱 Phone registration required to access ' + routeName);
       return;
     }
 
@@ -60,7 +58,7 @@ export const PhoneVerification = (() => {
     callback();
   }
 
-  // ── Open phone verification modal ────────────────────────────
+  // ── Open phone registration modal ────────────────────────────
   function openPhoneModal(step = 'enter') {
     const overlay = document.getElementById('phone-modal-overlay');
     if (!overlay) return;
@@ -80,7 +78,6 @@ export const PhoneVerification = (() => {
   // ── Step switcher ────────────────────────────────────────────
   function _setPhoneStep(step) {
     document.getElementById('phone-step-enter').style.display = step === 'enter' ? 'flex' : 'none';
-    document.getElementById('phone-step-otp').style.display   = step === 'otp'   ? 'flex' : 'none';
     document.getElementById('phone-step-done').style.display  = step === 'done'  ? 'flex' : 'none';
   }
 
@@ -96,132 +93,74 @@ export const PhoneVerification = (() => {
     if (btn) { btn.disabled = loading; btn.textContent = loading ? 'Please wait...' : label; }
   }
 
-  // ── Send OTP ─────────────────────────────────────────────────
-  async function sendOTP() {
+  // ── Register Phone (no OTP — saves directly) ─────────────────
+  async function registerPhone() {
     const input = document.getElementById('phone-input');
     const phone = input?.value.trim();
 
     if (!phone) { _setPhoneError('Please enter your phone number.'); return; }
     // Basic E.164 format check
     if (!/^\+[1-9]\d{6,14}$/.test(phone)) {
-      _setPhoneError('Use E.164 format: +1234567890 (include country code).');
+      _setPhoneError('Use international format: +2348012345678 (include country code).');
       return;
     }
 
-    _pendingPhone = phone;
     _setPhoneError('');
-    _setLoading('phone-send-btn', true, 'SEND CODE');
+    _setLoading('phone-send-btn', true, 'REGISTER NUMBER');
 
-    // Supabase sends OTP via Twilio to the user's new phone
-    const { error } = await supabase.auth.updateUser({ phone });
+    // Save phone number directly to profiles and mark as verified
+    const user = AuthManager.getCurrentUser();
+    if (!user) {
+      _setPhoneError('Session expired. Please sign in again.');
+      _setLoading('phone-send-btn', false, 'REGISTER NUMBER');
+      return;
+    }
 
-    _setLoading('phone-send-btn', false, 'SEND CODE');
+    const { error } = await supabase.from('profiles').upsert({
+      id:             user.id,
+      phone_number:   phone,
+      phone_verified: true,
+      updated_at:     new Date().toISOString(),
+    }, { onConflict: 'id' });
+
+    _setLoading('phone-send-btn', false, 'REGISTER NUMBER');
 
     if (error) {
       _setPhoneError(error.message);
       return;
-    }
-
-    // Switch to OTP entry step
-    _setPhoneStep('otp');
-    document.getElementById('otp-phone-display').textContent = phone;
-    setTimeout(() => document.getElementById('otp-input')?.focus(), 80);
-  }
-
-  // ── Verify OTP ───────────────────────────────────────────────
-  async function verifyOTP() {
-    const token = document.getElementById('otp-input')?.value.trim();
-    if (!token || token.length < 4) { _setPhoneError('Enter the 6-digit code.'); return; }
-
-    _setPhoneError('');
-    _setLoading('otp-verify-btn', true, 'VERIFY');
-
-    const { data, error } = await supabase.auth.verifyOtp({
-      phone: _pendingPhone,
-      token,
-      type: 'phone_change',
-    });
-
-    if (error) {
-      _setLoading('otp-verify-btn', false, 'VERIFY');
-      _setPhoneError(error.message);
-      return;
-    }
-
-    // Save to profiles table
-    const user = data.user || AuthManager.getCurrentUser();
-    if (user) {
-      await supabase.from('profiles').upsert({
-        id:             user.id,
-        phone_number:   _pendingPhone,
-        phone_verified: true,
-        updated_at:     new Date().toISOString(),
-      }, { onConflict: 'id' });
     }
 
     _verified = true;
-    _setLoading('otp-verify-btn', false, 'VERIFY');
     _setPhoneStep('done');
 
     // Fire the pending navigation callback after short delay
     setTimeout(() => {
       closePhoneModal();
-      window.showToast?.('✅ Phone verified! Access granted, Legend.');
+      window.showToast?.('✅ Phone registered! Access granted, Legend.');
       if (_pendingCb) { _pendingCb(); _pendingCb = null; }
     }, 2000);
   }
 
-  // ── Resend OTP ───────────────────────────────────────────────
-  async function resendOTP() {
-    const { error } = await supabase.auth.updateUser({ phone: _pendingPhone });
-    if (error) { _setPhoneError(error.message); return; }
-    window.showToast?.('New code sent!');
-  }
-
   // ── Wire up DOM events ───────────────────────────────────────
   function _bindEvents() {
-    // Overlay backdrop close (only if user clicks outside card)
+    // Overlay backdrop — phone modal is compulsory, cannot dismiss
     document.getElementById('phone-modal-overlay')?.addEventListener('click', e => {
-      // Phone modal is compulsory — cannot dismiss by backdrop
+      // Intentionally blocked
     });
 
-    // ESC disabled for compulsory modal (intentional)
-
-    // Send OTP button
-    document.getElementById('phone-send-btn')?.addEventListener('click', sendOTP);
+    // Register button
+    document.getElementById('phone-send-btn')?.addEventListener('click', registerPhone);
 
     // Phone input Enter
     document.getElementById('phone-input')?.addEventListener('keydown', e => {
-      if (e.key === 'Enter') sendOTP();
-    });
-
-    // Verify button
-    document.getElementById('otp-verify-btn')?.addEventListener('click', verifyOTP);
-
-    // OTP input Enter
-    document.getElementById('otp-input')?.addEventListener('keydown', e => {
-      if (e.key === 'Enter') verifyOTP();
-    });
-
-    // OTP input: auto-format (digits only)
-    document.getElementById('otp-input')?.addEventListener('input', e => {
-      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
-    });
-
-    // Resend link
-    document.getElementById('otp-resend-btn')?.addEventListener('click', resendOTP);
-
-    // Back to phone step
-    document.getElementById('otp-back-btn')?.addEventListener('click', () => {
-      _setPhoneStep('enter');
-      _clearPhoneMessages();
+      if (e.key === 'Enter') registerPhone();
     });
   }
 
   // ── Init ─────────────────────────────────────────────────────
   async function init() {
     _bindEvents();
-    // Check on load if user is already verified
+    // Check on load if user is already registered
     if (AuthManager.isLoggedIn()) {
       await checkVerified();
     }
