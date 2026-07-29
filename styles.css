@@ -1736,3 +1736,242 @@ body::after {
   .hero-stats .stat-card:last-child { grid-column: 1/-1; }
   .profile-stats { gap: 20px; }
 }
+
+/* ============================================================
+   PHASE 3 — Profile Setup, Role Mode, Social Links
+   ============================================================ */
+
+/* ---------- Mode Toggle (Nav) ---------- */
+.mode-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition);
+  white-space: nowrap;
+  font-family: inherit;
+}
+.mode-toggle-btn.mode-buyer {
+  color: #34d399;
+  border-color: rgba(52,211,153,0.4);
+}
+.mode-toggle-btn.mode-seller {
+  color: #fb923c;
+  border-color: rgba(251,146,60,0.45);
+  background: rgba(251,146,60,0.08);
+}
+.mode-toggle-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.25); }
+
+/* ---------- Mode Badge (Profile hero) ---------- */
+.mode-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.mode-badge-buyer {
+  background: rgba(52,211,153,0.12);
+  border: 1px solid rgba(52,211,153,0.4);
+  color: #34d399;
+}
+.mode-badge-seller {
+  background: rgba(251,146,60,0.12);
+  border: 1px solid rgba(251,146,60,0.4);
+  color: #fb923c;
+}
+
+/* ---------- Profile Setup Modal ---------- */
+.profile-setup-card {
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+}
+
+/* ---------- Avatar Upload ---------- */
+.setup-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.setup-avatar-preview {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--em-700), var(--em-500));
+  border: 3px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.setup-avatar-preview:hover { border-color: var(--em-400); box-shadow: 0 0 20px rgba(16,185,129,0.4); }
+.setup-avatar-initials {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+.setup-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.setup-avatar-preview:hover .setup-avatar-overlay { opacity: 1; }
+.setup-avatar-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Setup Form Grid ---------- */
+.setup-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 560px) { .setup-form-grid { grid-template-columns: 1fr; } }
+
+.req { color: var(--em-500); }
+
+/* ---------- Business Name Lock ---------- */
+.business-lock-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fb923c;
+  background: rgba(251,146,60,0.1);
+  border: 1px solid rgba(251,146,60,0.3);
+  border-radius: 99px;
+  padding: 2px 8px;
+  margin-left: 6px;
+}
+.setup-lock-hint {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: rgba(251,146,60,0.08);
+  border: 1px solid rgba(251,146,60,0.3);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: #fb923c;
+  line-height: 1.5;
+}
+.input-locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(0,0,0,0.15) !important;
+}
+
+/* ---------- Social Links Section ---------- */
+.setup-social-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.setup-section-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--em-500);
+  padding-left: 2px;
+}
+.social-link-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 36px;
+  gap: 8px;
+  align-items: center;
+}
+@media (max-width: 480px) { .social-link-row { grid-template-columns: 1fr 1fr 36px; } }
+.social-remove-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(248,113,113,0.4);
+  background: rgba(248,113,113,0.06);
+  border-radius: var(--radius-sm);
+  color: #f87171;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  font-family: inherit;
+}
+.social-remove-btn:hover {
+  background: rgba(248,113,113,0.15);
+  border-color: #f87171;
+}
+
+/* ---------- Profile Social Links Display ---------- */
+.profile-social-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid var(--glass-border);
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--em-400);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  transition: all var(--transition);
+}
+.profile-social-link:hover {
+  background: rgba(16,185,129,0.18);
+  border-color: var(--em-400);
+  transform: translateY(-1px);
+}
+
+/* ---------- Profile Avatar Photo ---------- */
+.profile-avatar-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--em-400);
+  box-shadow: 0 0 24px rgba(16,185,129,0.5);
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------- Setup Section Title ---------- */
+.setup-section-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--em-500);
+  padding-left: 2px;
+}
