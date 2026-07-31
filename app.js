@@ -221,16 +221,9 @@ function initHome() {
 }
 
 /* ─── MARKETPLACE VIEW ──────────────────────────────────────── */
-const PRODUCTS = [
-  { emoji: '⚔️',  name: 'Legend Blade Skin',    cat: 'WEAPONS',     price: '2,500' },
-  { emoji: '🛡️',  name: 'Emerald Shield Pack',   cat: 'ARMOR',       price: '1,800' },
-  { emoji: '🏆',  name: 'Champion Trophy NFT',   cat: 'COLLECTIBLE', price: '5,000' },
-  { emoji: '💎',  name: 'Diamond Access Pass',   cat: 'MEMBERSHIP',  price: '9,999' },
-  { emoji: '🎯',  name: 'Precision Strike Kit',  cat: 'WEAPONS',     price: '3,200' },
-  { emoji: '🌿',  name: 'Nature God Bundle',     cat: 'BUNDLE',      price: '7,500' },
-  { emoji: '🔮',  name: 'Mystic Orb Charm',      cat: 'COLLECTIBLE', price: '1,200' },
-  { emoji: '👑',  name: 'Legends Crown Title',   cat: 'MEMBERSHIP',  price: '15,000' },
-];
+// Marketplace listings are loaded from the database.
+// PRODUCTS is empty until real sellers post listings.
+const PRODUCTS = [];
 
 function initMarketplace() {
   renderProducts('ALL');
@@ -247,6 +240,15 @@ function renderProducts(filter) {
   const grid = document.getElementById('products-grid');
   if (!grid) return;
   const items = filter === 'ALL' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filter);
+  if (!items.length) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+        <div style="font-size:3rem;margin-bottom:16px;">🛒</div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No listings yet</div>
+        <div style="font-size:0.9rem;color:var(--text-muted);">Switch to Seller mode and be the first to list an item.</div>
+      </div>`;
+    return;
+  }
   grid.innerHTML = items.map(p => `
     <div class="glass-card product-card">
       <div class="product-img">${p.emoji}</div>
@@ -267,8 +269,7 @@ const NEWS = [
   { day: '29', month: 'JUL', tag: 'UPDATE',   title: 'Profile Setup & Buyer/Seller Modes Now Live!',    excerpt: 'Legends can now build a full profile — avatar, display name, profile tag, business name, and social links. Switch between Buyer and Seller mode anytime.' },
   { day: '18', month: 'JUL', tag: 'FEATURE',  title: 'Authentication & Phone Registration Live',        excerpt: 'Supabase authentication, Google OAuth, and phone registration are now live across the Pillars ecosystem. Security-first, always.' },
   { day: '12', month: 'JUL', tag: 'FEATURE',  title: 'Live Chat System Introduced',                    excerpt: 'Real-time communication is now available across all Legend tiers. Connect, share strategies, and form alliances.' },
-  { day: '05', month: 'JUL', tag: 'EVENT',    title: "Champion's Tournament Season 1 Begins",          excerpt: 'The first Pillars tournament kicks off with 1,000,000 PLC in prizes. Register your squad and compete for the Champion Crown.' },
-  { day: '28', month: 'JUN', tag: 'ECONOMY',  title: 'Pillars Coin (PLC) Tokenomics Revealed',        excerpt: 'Full PLC tokenomics whitepaper published. Read how the in-game economy rewards skill, loyalty, and community.' },
+  { day: '05', month: 'JUL', tag: 'COMMUNITY', title: 'Welcome to Pillars — Community Now Open',        excerpt: 'The Pillars community is officially open. Sign up, complete your profile, and connect with fellow Legends in real-time chat.' },
 ];
 
 function initNews() {
@@ -293,14 +294,14 @@ function initNews() {
 const INITIAL_CHAT = [
   { self: false, user: 'LG', name: 'LegendGod',     text: 'Welcome to Pillars Community Chat! Do simple things repeatedly... 🏛️' },
   { self: false, user: 'PX', name: 'PixelKnight',   text: 'Just set up my profile and switched to Seller mode — marketplace is looking 🔥' },
-  { self: false, user: 'EQ', name: 'EmeraldQueen',  text: 'Already grabbed the Champion Trophy NFT 🏆 This ecosystem is built different.' },
+  { self: false, user: 'EQ', name: 'EmeraldQueen',  text: 'Profile is set up, marketplace is open — this ecosystem is built different. 🏛️' },
 ];
 const REPLIES = [
   'Welcome, Legend! The grind never stops 💪',
   "That's what I'm talking about. Do simple things repeatedly!",
   'Building together is how we rise. Respect! 🏛️',
   'Legendary mindset right there 🔥',
-  'Phase 3 guilds are going to be massive. Stay ready.',
+  'The community is just getting started. Big things ahead. 🏛️',
 ];
 
 function initChat() {
