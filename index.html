@@ -170,7 +170,7 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
-       PROFILE SETUP MODAL (Phase 3)
+       PROFILE SETUP MODAL
   ════════════════════════════════════════════ -->
   <div id="profile-setup-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Profile Setup">
     <div class="modal-card profile-setup-card">
@@ -354,16 +354,16 @@
         </div>
         <div class="hero-stats">
           <div class="glass-card stat-card">
-            <div class="stat-num" data-target="12500" data-plus="true">0+</div>
-            <div class="stat-label">Legends</div>
+            <div class="stat-num">✅</div>
+            <div class="stat-label">Auth Live</div>
           </div>
           <div class="glass-card stat-card">
-            <div class="stat-num" data-target="850" data-plus="true">0+</div>
-            <div class="stat-label">Items</div>
+            <div class="stat-num">✅</div>
+            <div class="stat-label">Profiles Live</div>
           </div>
           <div class="glass-card stat-card">
-            <div class="stat-num" data-target="1" data-suffix="M+ PLC">0</div>
-            <div class="stat-label">Volume</div>
+            <div class="stat-num">✅</div>
+            <div class="stat-label">Chat Live</div>
           </div>
         </div>
       </div>
@@ -395,7 +395,7 @@
           <div class="glass-card feature-card">
             <div class="feature-icon">💎</div>
             <h3 class="feature-title">True Ownership</h3>
-            <p class="feature-desc">Your items, your identity. From NFT collectibles to exclusive skins — everything you earn in Pillars belongs to you alone.</p>
+            <p class="feature-desc">Your items, your identity. Everything you earn and trade in Pillars belongs to you alone — your profile, your listings, your reputation.</p>
           </div>
           <div class="glass-card feature-card">
             <div class="feature-icon">🔐</div>
@@ -410,12 +410,12 @@
           <div class="glass-card feature-card">
             <div class="feature-icon">🏆</div>
             <h3 class="feature-title">Compete &amp; Conquer</h3>
-            <p class="feature-desc">Ranked tournaments, seasonal leaderboards, and Championship events with massive PLC prize pools.</p>
+            <p class="feature-desc">Ranked leaderboards, community challenges, and Championship events — glory waits for those who show up consistently.</p>
           </div>
           <div class="glass-card feature-card">
-            <div class="feature-icon">🔮</div>
-            <h3 class="feature-title">Guilds &amp; Land NFTs</h3>
-            <p class="feature-desc">Guild systems, land NFTs, governance voting, and cross-platform play. The Pillars universe is expanding fast — stay ready.</p>
+            <div class="feature-icon">🤝</div>
+            <h3 class="feature-title">Buyer &amp; Seller Modes</h3>
+            <p class="feature-desc">Switch between Buyer and Seller mode anytime. List items, build your storefront, and transact directly with the Legends community.</p>
           </div>
         </div>
       </div>
@@ -523,9 +523,9 @@
             <div class="profile-name" id="profile-display-name">Legend</div>
             <div class="profile-handle" id="profile-email-display">@legend · BRONZE</div>
             <div class="profile-stats">
-              <div class="p-stat"><div class="p-stat-num">47</div><div class="p-stat-lbl">Items</div></div>
-              <div class="p-stat"><div class="p-stat-num">12.5K</div><div class="p-stat-lbl">PLC</div></div>
-              <div class="p-stat"><div class="p-stat-num">284</div><div class="p-stat-lbl">Rank</div></div>
+              <div class="p-stat"><div class="p-stat-num" id="stat-items">—</div><div class="p-stat-lbl">Items</div></div>
+              <div class="p-stat"><div class="p-stat-num" id="stat-plc">—</div><div class="p-stat-lbl">PLC</div></div>
+              <div class="p-stat"><div class="p-stat-num" id="stat-rank">—</div><div class="p-stat-lbl">Rank</div></div>
             </div>
             <button onclick="window.__ProfileManager?.openSetupModal()" class="btn btn-glass" style="padding:8px 22px;font-size:0.82rem;margin-top:4px;">✏️ Edit Profile</button>
           </div>
@@ -693,7 +693,7 @@
             <div class="glass-card admin-coming-soon">
               <div class="admin-coming-icon">🏪</div>
               <h3>Marketplace Management</h3>
-              <p>Full listing management, approvals, and moderation coming in Phase 3.</p>
+              <p>Listing management, approvals, and seller moderation tools are on the way.</p>
             </div>
           </div>
 
@@ -706,7 +706,7 @@
   <!-- FOOTER -->
   <footer id="footer" role="contentinfo">
     <div><strong>"Do simple things repeatedly..."</strong></div>
-    <div class="footer-copy">© 2025 PROJECT PILLARS BY LEGENDS · Phase 2 · All rights reserved.</div>
+    <div class="footer-copy">© 2025 PROJECT PILLARS BY LEGENDS · All rights reserved.</div>
   </footer>
 
   <!-- Fallback: force-hide splash after 3.5s even if the ES module fails to load -->
